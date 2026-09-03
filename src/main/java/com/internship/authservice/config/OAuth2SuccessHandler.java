@@ -85,7 +85,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         // =================================================
 
         response.sendRedirect(
-                frontendUrl + "/oauth2/success?token=" + token
-        );
+        frontendUrl + "/?token=" + token
+);
     }
 }
