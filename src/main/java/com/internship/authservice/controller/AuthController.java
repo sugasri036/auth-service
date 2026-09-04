@@ -1,3 +1,4 @@
+
 package com.internship.authservice.controller;
 
 import com.internship.authservice.entity.User;
@@ -33,11 +34,12 @@ public class AuthController {
             String password = request.get("password");
             String name = request.get("name");
 
-            User user = authService.registerUser(
-                    email,
-                    password,
-                    name
-            );
+            User user =
+                    authService.registerUser(
+                            email,
+                            password,
+                            name
+                    );
 
             String token =
                     authService.createTokenForUser(user);
@@ -127,6 +129,154 @@ public class AuthController {
 
 
     // =====================================================
+    // FORGOT PASSWORD - SEND OTP
+    // =====================================================
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(
+            @RequestBody Map<String, String> request) {
+
+        try {
+
+            String email =
+                    request.get("email");
+
+            authService.sendForgotPasswordOtp(
+                    email
+            );
+
+            return ResponseEntity.ok(
+                    Map.of(
+                            "success",
+                            true,
+
+                            "message",
+                            "OTP sent successfully"
+                    )
+            );
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            Map.of(
+                                    "success",
+                                    false,
+
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+
+    // =====================================================
+    // VERIFY FORGOT PASSWORD OTP
+    // =====================================================
+
+    @PostMapping("/forgot-password/verify")
+    public ResponseEntity<?> verifyForgotPasswordOtp(
+            @RequestBody Map<String, String> request) {
+
+        try {
+
+            String email =
+                    request.get("email");
+
+            String otp =
+                    request.get("otp");
+
+            String sessionToken =
+                    authService.verifyForgotPasswordOtp(
+                            email,
+                            otp
+                    );
+
+            return ResponseEntity.ok(
+                    Map.of(
+                            "success",
+                            true,
+
+                            "message",
+                            "OTP verified successfully",
+
+                            "sessionToken",
+                            sessionToken
+                    )
+            );
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            Map.of(
+                                    "success",
+                                    false,
+
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+
+    // =====================================================
+    // RESET PASSWORD
+    // =====================================================
+
+    @PostMapping("/forgot-password/reset")
+    public ResponseEntity<?> resetPassword(
+            @RequestBody Map<String, String> request) {
+
+        try {
+
+            String email =
+                    request.get("email");
+
+            String sessionToken =
+                    request.get("sessionToken");
+
+            String newPassword =
+                    request.get("newPassword");
+
+            authService.resetPassword(
+                    email,
+                    sessionToken,
+                    newPassword
+            );
+
+            return ResponseEntity.ok(
+                    Map.of(
+                            "success",
+                            true,
+
+                            "message",
+                            "Password reset successfully"
+                    )
+            );
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            Map.of(
+                                    "success",
+                                    false,
+
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+
+    // =====================================================
     // AUTH SERVICE HEALTH CHECK
     // =====================================================
 
@@ -141,3 +291,4 @@ public class AuthController {
         );
     }
 }
+
