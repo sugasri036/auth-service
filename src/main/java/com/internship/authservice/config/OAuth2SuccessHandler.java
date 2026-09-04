@@ -81,11 +81,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 authService.createTokenForUser(user);
 
         // =================================================
-        // REDIRECT FRONTEND
+        // REDIRECT TO DEPLOYED FRONTEND
         // =================================================
 
         response.sendRedirect(
-        frontendUrl + "/?token=" + token
-);
+                frontendUrl + "/?token=" + token
+        );
     }
 }
