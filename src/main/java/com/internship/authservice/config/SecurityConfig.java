@@ -16,9 +16,6 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${app.frontend.url}")
-    private String frontendUrl;
-
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -61,7 +58,12 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/api/auth/register",
                                         "/api/auth/login",
-                                        "/api/auth/test"
+                                        "/api/auth/test",
+
+                                        // FORGOT PASSWORD
+                                        "/api/auth/forgot-password",
+                                        "/api/auth/forgot-password/verify",
+                                        "/api/auth/forgot-password/reset"
                                 )
                                 .permitAll()
 
@@ -99,13 +101,11 @@ public class SecurityConfig {
                 // -------------------------------------------------
 
                 .oauth2ResourceServer(oauth2 ->
-                      oauth2.jwt(jwt -> {})
+                        oauth2.jwt(jwt -> {})
                 );
-            
 
         return http.build();
     }
-
 
     // =====================================================
     // JWT DECODER

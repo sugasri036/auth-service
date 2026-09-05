@@ -1,4 +1,3 @@
-
 package com.internship.authservice.controller;
 
 import com.internship.authservice.entity.User;
@@ -18,7 +17,6 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-
 
     // =====================================================
     // REGISTER
@@ -74,7 +72,6 @@ public class AuthController {
         }
     }
 
-
     // =====================================================
     // LOGIN
     // =====================================================
@@ -127,7 +124,6 @@ public class AuthController {
         }
     }
 
-
     // =====================================================
     // FORGOT PASSWORD - SEND OTP
     // =====================================================
@@ -141,9 +137,7 @@ public class AuthController {
             String email =
                     request.get("email");
 
-            authService.sendForgotPasswordOtp(
-                    email
-            );
+            authService.sendForgotPasswordOtp(email);
 
             return ResponseEntity.ok(
                     Map.of(
@@ -170,7 +164,6 @@ public class AuthController {
                     );
         }
     }
-
 
     // =====================================================
     // VERIFY FORGOT PASSWORD OTP
@@ -223,7 +216,6 @@ public class AuthController {
         }
     }
 
-
     // =====================================================
     // RESET PASSWORD
     // =====================================================
@@ -275,7 +267,6 @@ public class AuthController {
         }
     }
 
-
     // =====================================================
     // AUTH SERVICE HEALTH CHECK
     // =====================================================
@@ -291,4 +282,3 @@ public class AuthController {
         );
     }
 }
-

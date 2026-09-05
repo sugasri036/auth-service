@@ -1,4 +1,3 @@
-
 package com.internship.authservice.config;
 
 import org.springframework.context.annotation.Bean;
@@ -13,4 +12,3 @@ public class RestTemplateConfig {
         return new RestTemplate();
     }
 }
-

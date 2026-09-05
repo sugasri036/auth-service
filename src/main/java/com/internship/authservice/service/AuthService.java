@@ -1,4 +1,3 @@
-
 package com.internship.authservice.service;
 
 import com.internship.authservice.entity.User;
@@ -34,7 +33,6 @@ public class AuthService {
         this.restTemplate = restTemplate;
     }
 
-
     // =====================================================
     // REGISTER USER
     // =====================================================
@@ -45,41 +43,28 @@ public class AuthService {
             String name) {
 
         if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Email is required"
-            );
+            throw new IllegalArgumentException("Email is required");
         }
 
         if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Password is required"
-            );
+            throw new IllegalArgumentException("Password is required");
         }
 
-        String normalizedEmail =
-                email.trim().toLowerCase();
+        String normalizedEmail = email.trim().toLowerCase();
 
         if (userRepository.existsByEmail(normalizedEmail)) {
-            throw new IllegalArgumentException(
-                    "Email already registered"
-            );
+            throw new IllegalArgumentException("Email already registered");
         }
 
         User user = new User();
 
         user.setEmail(normalizedEmail);
-
-        user.setPassword(
-                passwordEncoder.encode(password)
-        );
-
+        user.setPassword(passwordEncoder.encode(password));
         user.setName(name);
-
         user.setProvider("LOCAL");
 
         return userRepository.save(user);
     }
-
 
     // =====================================================
     // LOGIN USER
@@ -90,27 +75,20 @@ public class AuthService {
             String password) {
 
         if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Email is required"
-            );
+            throw new IllegalArgumentException("Email is required");
         }
 
         if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Password is required"
-            );
+            throw new IllegalArgumentException("Password is required");
         }
 
-        User user =
-                userRepository
-                        .findByEmail(
-                                email.trim().toLowerCase()
+        User user = userRepository
+                .findByEmail(email.trim().toLowerCase())
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "Invalid email or password"
                         )
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Invalid email or password"
-                                )
-                        );
+                );
 
         if (user.getPassword() == null) {
             throw new RuntimeException(
@@ -133,19 +111,16 @@ public class AuthService {
         return user;
     }
 
-
     // =====================================================
     // CREATE JWT
     // =====================================================
 
-    public String createTokenForUser(
-            User user) {
+    public String createTokenForUser(User user) {
 
         return jwtService.generateToken(
                 user.getEmail()
         );
     }
-
 
     // =====================================================
     // GOOGLE USER
@@ -160,61 +135,43 @@ public class AuthService {
                 .findByGoogleId(googleId)
                 .orElseGet(() -> {
 
+                    String normalizedEmail =
+                            email.trim().toLowerCase();
+
                     User existingUser =
                             userRepository
-                                    .findByEmail(
-                                            email.trim().toLowerCase()
-                                    )
+                                    .findByEmail(normalizedEmail)
                                     .orElse(null);
 
                     if (existingUser != null) {
 
-                        existingUser.setGoogleId(
-                                googleId
-                        );
-
-                        existingUser.setProvider(
-                                "GOOGLE"
-                        );
+                        existingUser.setGoogleId(googleId);
+                        existingUser.setProvider("GOOGLE");
 
                         if (existingUser.getName() == null) {
                             existingUser.setName(name);
                         }
 
-                        return userRepository.save(
-                                existingUser
-                        );
+                        return userRepository.save(existingUser);
                     }
 
                     User user = new User();
 
-                    user.setEmail(
-                            email.trim().toLowerCase()
-                    );
-
+                    user.setEmail(normalizedEmail);
                     user.setName(name);
-
-                    user.setGoogleId(
-                            googleId
-                    );
-
-                    user.setProvider(
-                            "GOOGLE"
-                    );
-
+                    user.setGoogleId(googleId);
+                    user.setProvider("GOOGLE");
                     user.setPassword(null);
 
                     return userRepository.save(user);
                 });
     }
 
-
     // =====================================================
     // FORGOT PASSWORD - SEND OTP
     // =====================================================
 
-    public void sendForgotPasswordOtp(
-            String email) {
+    public void sendForgotPasswordOtp(String email) {
 
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(
@@ -234,10 +191,7 @@ public class AuthService {
                                 )
                         );
 
-        /*
-         * Google-only accounts don't have a local password.
-         * They should continue using Google login.
-         */
+        // Google-only users don't have a local password.
         if (user.getPassword() == null) {
             throw new RuntimeException(
                     "This account uses Google login. Please continue with Google."
@@ -260,9 +214,8 @@ public class AuthService {
         );
     }
 
-
     // =====================================================
-    // VERIFY OTP
+    // VERIFY FORGOT PASSWORD OTP
     // =====================================================
 
     public String verifyForgotPasswordOtp(
@@ -347,7 +300,6 @@ public class AuthService {
 
         return sessionToken.toString();
     }
-
 
     // =====================================================
     // RESET PASSWORD
@@ -435,7 +387,9 @@ public class AuthService {
                 || !((Boolean) success)
                 || identifier == null
                 || !normalizedEmail.equals(
-                        identifier.toString().trim().toLowerCase()
+                        identifier.toString()
+                                .trim()
+                                .toLowerCase()
                 )) {
 
             throw new RuntimeException(
@@ -454,4 +408,3 @@ public class AuthService {
         userRepository.save(user);
     }
 }
-
