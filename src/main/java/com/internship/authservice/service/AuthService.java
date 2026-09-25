@@ -117,10 +117,11 @@ public class AuthService {
 
     public String createTokenForUser(User user) {
 
-        return jwtService.generateToken(
-                user.getEmail()
-        );
-    }
+    return jwtService.generateToken(
+            user.getEmail(),
+            user.getId()
+    );
+}
 
     // =====================================================
     // GOOGLE USER

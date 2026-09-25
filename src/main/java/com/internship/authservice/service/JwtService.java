@@ -35,14 +35,32 @@ public class JwtService {
     // =====================================================
 
     public String generateToken(
-            String email) {
+            String email,
+            Long userId) {
 
         long expirationTime =
                 1000L * 60 * 60 * 24;
 
         return Jwts.builder()
 
+                // -------------------------------------------------
+                // USER ID
+                // -------------------------------------------------
+
+                .claim(
+                        "userId",
+                        userId.toString()
+                )
+
+                // -------------------------------------------------
+                // EMAIL
+                // -------------------------------------------------
+
                 .subject(email)
+
+                // -------------------------------------------------
+                // TIMESTAMPS
+                // -------------------------------------------------
 
                 .issuedAt(
                         new Date()
@@ -54,6 +72,10 @@ public class JwtService {
                                         + expirationTime
                         )
                 )
+
+                // -------------------------------------------------
+                // SIGN TOKEN
+                // -------------------------------------------------
 
                 .signWith(
                         getSigningKey()
